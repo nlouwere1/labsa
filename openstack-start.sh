@@ -5,8 +5,8 @@
 
 yum install -y nfs-utils libnfsidmap
 mkdir /nfs
-mount -o rw -t nfs nas:/export/openstack /nfs
-/bin/cp /nfs/repo/CentOS-Base.repo /etc/yum.repos.d/.
+
+/bin/cp yum/CentOS-Base.repo /etc/yum.repos.d/.
 yum update -y
 yum install -y epel-release
 yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
@@ -28,7 +28,7 @@ systemctl enable nfs-server
 systemctl restart nfs-server
 
 # environoment setup and installing packstack
-/bin/cp /nfs/repo2/* /etc/yum.repos.d/.
+/bin/cp yum/* /etc/yum.repos.d/.
 yum install -y openstack-packstack
 yum install -y openstack-tools
 tee /etc/environment<<-'EOF'
