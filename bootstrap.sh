@@ -6,6 +6,7 @@
 echo "mirror.centos.org 154.66.153.4" >> /etc/hosts
 sed -i "s/mirrorlist=/#mirrorlist=/g" /etc/yum.repos.d/CentOS-Base.repo
 sed -i "s/#baseurl=/baseurl=/g" /etc/yum.repos.d/CentOS-Base.repo
+#as i had some resolving issues need to find a way to force lookup again on mirror.centos.org
 sed -i "s/mirror.centos.org/mirror.wiru.co.za/g" /etc/yum.repos.d/CentOS-Base.repo
 #disable the fastest mirror plugin
 sed -i "s/enabled=1/enabled=0/g" /etc/yum/pluginconf.d/fastestmirror.conf
