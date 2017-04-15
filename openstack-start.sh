@@ -10,13 +10,24 @@ mount -o rw -t nfs nas:/export/openstack /nfs
 yum update -y
 yum install -y epel-release
 yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
-yum install nfs-utils libnfsidmap
+
+# enabeling nfs-server
+
 systemctl enable nfs-server
+systemctl start rpcbind
+systemctl start nfs-server
+systemctl start rpc-statd
+systemctl start nfs-idmapd
 mkdir /cinder
 chmod 777 /cinder
 chown root.wheel/cinder
 echo "/cinder    10.0.0.0/8(rw,sync,no_root_squash,no_all_squash,insecure)" >> /etc/exports
 echo "10.0.1.1:/export/openstack    /nfs   nfs defaults 0 0" >> /etc/fstab
+exportfs -r
+systemctl enable nfs-server
+systemctl restart nfs-server
+
+# environoment setup and installing packstack
 /bin/cp /nfs/repo2/* /etc/yum.repos.d/.
 yum install -y openstack-packstack
 yum install -y openstack-tools
