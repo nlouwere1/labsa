@@ -20,7 +20,7 @@ systemctl start rpc-statd
 systemctl start nfs-idmapd
 mkdir /cinder
 chmod 777 /cinder
-chown root.wheel/cinder
+chown root.wheel /cinder
 echo "/cinder    10.0.0.0/8(rw,sync,no_root_squash,no_all_squash,insecure)" >> /etc/exports
 echo "10.0.1.1:/export/openstack    /nfs   nfs defaults 0 0" >> /etc/fstab
 exportfs -r
