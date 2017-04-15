@@ -3,6 +3,11 @@
 # this file can be pulled git clone https://github.com/nlouwere1/labsa.git
 # first section is to force a speciffic mirror in yum had issues that it takes a repo that was down
 
+# adding git
+git config --global user.name "nlouwere1"
+git config --global user.email "nlouwere@me.com"
+git config --global color.ui auto
+
 yum install -y nfs-utils libnfsidmap
 mkdir /nfs
 
