@@ -3,10 +3,12 @@
 # this file can be pulled git clone https://github.com/nlouwere1/labsa.git
 # first section is to force a speciffic mirror in yum had issues that it takes a repo that was down
 # forcing reslove to my fastest mirror change ip if needed
+mymirror='mirror.wiru.co.za'
+echo "this is it ${mymirror}"
 echo "mirror.centos.org 154.66.153.4" >> /etc/hosts
 sed -i "s/mirrorlist=/#mirrorlist=/g" /etc/yum.repos.d/CentOS-Base.repo
 sed -i "s/#baseurl=/baseurl=/g" /etc/yum.repos.d/CentOS-Base.repo
-sed -i "s/mirror.centos.org/mirror.wiru.co.za/g" /etc/yum.repos.d/CentOS-Base.repo
+sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/CentOS-Base.repo
 #disable the fastest mirror plugin
 sed -i "s/enabled=1/enabled=0/g" /etc/yum/pluginconf.d/fastestmirror.conf
 
@@ -33,12 +35,12 @@ git config --global color.ui auto
 yum update -y
 yum install -y nfs-utils libnfsidmap epel-release ntp ntpdate open-vm-tools
 yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
-sed -i "s/mirror.centos.org/mirror.wiru.co.za/g" /etc/yum.repos.d/rdo-release.repo
-sed -i "s/mirror.centos.org/mirror.wiru.co.za/g" /etc/yum.repos.d/rdo-qemu-ev.repo 
+sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/rdo-release.repo
+sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/rdo-qemu-ev.repo 
 sed -i "s/mirrorlist=/#mirrorlist=/g" /etc/yum.repos.d/CentOS-fasttrack.repo
 sed -i "s/#baseurl=/baseurl=/g" /etc/yum.repos.d/CentOS-fasttrack.repo
-sed -i "s/mirror.centos.org/mirror.wiru.co.za/g" /etc/yum.repos.d/CentOS-fasttrack.repo
-sed -i "s/mirror.centos.org/mirror.wiru.co.za/g" /etc/yum.repos.d/CentOS-CR.repo
+sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/CentOS-fasttrack.repo
+sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/CentOS-CR.repo
 yum erase chrony -y
 sed -i "s/#restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap/#restrict 10.0.0.0 mask 255.0.0.0 nomodify notrap/g" /etc/ntp.conf
 sed -i "s/server 3.centos.pool.ntp.org iburst/#server 3.centos.pool.ntp.org iburst/g" /etc/ntp.conf
