@@ -88,4 +88,5 @@ echo 'after that run packstack --answer-file=answer.txt or edit it to suite your
 echo ''
 echo 'REBOOT IMMER GOOD'
 ntpq -p
+showmount -e localhost
 # echo 'handy command sed -e 's/#.*$//' -e '/^$/d' answer.txt  > answer1.txt to get rid of all comments'
