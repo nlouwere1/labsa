@@ -12,11 +12,13 @@ ip domain-name onecloudinc.com
 crypto key generate rsa modulus 1024
  
 interface GigabitEthernet1
-ip address 10.0.0.1 255.255.255.0
+description to management network
+ip address 10.0.10.1 255.255.255.0
 no shutdown
 
 interface GigabitEthernet2
-ip address 10.1.0.1 255.255.255.0
+description to tennant network
+ip address 10.0.20.1 255.255.255.0
 no shutdown
 
 ip router
@@ -25,6 +27,6 @@ virtual-service csr_mgmt
 ip shared host-interface GigabitEthernet1
 activate
 license accept end user agreement
-license boot level premium
+license boot level ax
 end
 
