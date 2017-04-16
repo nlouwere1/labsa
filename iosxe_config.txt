@@ -1,0 +1,30 @@
+hostname csr
+
+line con 0
+logging synchronous
+transport preferred none
+line vty 0 4
+login local
+transport preferred none
+transport input ssh telnet
+username stack priv 15 secret cisco
+ip domain-name onecloudinc.com
+crypto key generate rsa modulus 1024
+ 
+interface GigabitEthernet1
+ip address 10.0.0.1 255.255.255.0
+no shutdown
+
+interface GigabitEthernet2
+ip address 10.1.0.1 255.255.255.0
+no shutdown
+
+ip router
+
+virtual-service csr_mgmt
+ip shared host-interface GigabitEthernet1
+activate
+license accept end user agreement
+license boot level premium
+end
+
