@@ -5,6 +5,9 @@
 # forcing reslove to my fastest mirror change ip if needed
 
 mymirror='mirror.wiru.co.za'
+my_ntp='10.0.1.254'
+my_net='10.0.0.0'
+
 
 echo "this is it ${mymirror}"
 echo "mirror.centos.org 154.66.153.4" >> /etc/hosts
@@ -38,17 +41,15 @@ yum update -y
 yum install -y nfs-utils libnfsidmap epel-release ntp ntpdate open-vm-tools mc
 yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
 sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/*
-#sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/rdo-qemu-ev.repo 
 sed -i "s/mirrorlist=/#mirrorlist=/g" /etc/yum.repos.d/CentOS-fasttrack.repo
 sed -i "s/#baseurl=/baseurl=/g" /etc/yum.repos.d/CentOS-fasttrack.repo
-#sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/CentOS-fasttrack.repo
-#sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/CentOS-CR.repo
+
 yum erase chrony -y
-sed -i "s/#restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap/#restrict 10.0.0.0 mask 255.0.0.0 nomodify notrap/g" /etc/ntp.conf
+sed -i "s/#restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap/#restrict ${my_net} mask 255.0.0.0 nomodify notrap/g" /etc/ntp.conf
 sed -i "s/server 3.centos.pool.ntp.org iburst/#server 3.centos.pool.ntp.org iburst/g" /etc/ntp.conf
 sed -i "s/server 1.centos.pool.ntp.org iburst/#server 1.centos.pool.ntp.org iburst/g" /etc/ntp.conf
 sed -i "s/server 2.centos.pool.ntp.org iburst/#server 2.centos.pool.ntp.org iburst/g" /etc/ntp.conf
-sed -i "s/server 0.centos.pool.ntp.org iburst/server 10.0.1.254 iburst/g" /etc/ntp.conf
+sed -i "s/server 0.centos.pool.ntp.org iburst/server  ${my_ntp} iburst/g" /etc/ntp.conf
 systemctl start ntpd && systemctl enable ntpd && systemctl status ntpd
 
 
@@ -62,7 +63,7 @@ systemctl start nfs-idmapd
 mkdir /cinder
 chmod 777 /cinder
 chown root.wheel /cinder
-echo "/cinder    10.0.0.0/8(rw,sync,no_root_squash,no_all_squash,insecure)" >> /etc/exports
+echo "/cinder     ${my_net}/8(rw,sync,no_root_squash,no_all_squash,insecure)" >> /etc/exports
 echo "10.0.1.1:/export/openstack    /nfs   nfs defaults 0 0" >> /etc/fstab
 exportfs -r
 systemctl enable nfs-server
