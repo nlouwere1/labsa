@@ -35,7 +35,7 @@ git config --global color.ui auto
 
 #updating and installing needed packages including switch from chrony to NTP
 yum update -y
-yum install -y nfs-utils libnfsidmap epel-release ntp ntpdate open-vm-tools
+yum install -y nfs-utils libnfsidmap epel-release ntp ntpdate open-vm-tools mc
 yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
 sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/*
 #sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/rdo-qemu-ev.repo 
