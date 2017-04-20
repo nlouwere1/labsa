@@ -7,7 +7,7 @@
 mymirror='mirror.wiru.co.za'
 my_ntp='10.0.1.254'
 my_net='10.0.0.0'
-
+my_int='enp1s0f1'
 
 echo "this is it ${mymirror}"
 echo "mirror.centos.org 154.66.153.4" >> /etc/hosts
@@ -16,7 +16,10 @@ sed -i "s/#baseurl=/baseurl=/g" /etc/yum.repos.d/CentOS-Base.repo
 sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/*
 #disable the fastest mirror plugin
 sed -i "s/enabled=1/enabled=0/g" /etc/yum/pluginconf.d/fastestmirror.conf
-
+echo "ulimit -n 10480" >> ~/.bashrc
+sed -i "s/BOOTPROTO=dhcp/BOOTPROTO=none/g" /etc/sysconfig/network-scripts/ifcfg-${my_int}
+sed -i "s/ONBOOT=no/ONBOOT=yes/g" /etc/sysconfig/network-scripts/ifcfg-${my_int}
+echo "NM_CONTROLLED=no" >> /etc/sysconfig/network-scripts/ifcfg-${my_int}
 
 # setting up environoment
 tee /etc/environment<<-'EOF'
@@ -82,7 +85,7 @@ echo ''
 echo 'disbled selinx,firewall,networkmanager enabled network and lanugae support'
 echo ''
 echo 'please configure second interfave to manual and NM_CONTROLLED=no'
-echo 'packstack --gen-answer-file=answer.txt --default-password=cisco --allinone --provision-demo=n --os-neutron-ovs-bridge-mappings=extnet:br-ex --os-neutron-ovs-bridge-interfaces=br-ex:ens256 --os-neutron-ml2-type-drivers=vxlan,flat,vlan --cinder-volumes-create=n --nagios-install=n --os-neutron-lbaas-install=y --os-heat-install=y --cinder-nfs-mounts=10.0.1.21:/cinder --cinder-backend=nfs'
+echo 'packstack --gen-answer-file=answer.txt --default-password=cisco --allinone --provision-demo=n --os-neutron-ovs-bridge-mappings=extnet:br-ex --os-neutron-ovs-bridge-interfaces=br-ex:${my_int}  --os-neutron-ml2-type-drivers=vxlan,flat,vlan --cinder-volumes-create=n --nagios-install=n --os-neutron-lbaas-install=y --os-heat-install=y --cinder-nfs-mounts=10.0.1.21:/cinder --cinder-backend=nfs'
 echo 'remember to change --os-neutron-ovs-bridge-interfaces=br-ex:ens256 and --cinder-nfs-mounts=10.0.1.21:/cinder'
 echo 'after that run packstack --answer-file=answer.txt or edit it to suite your needs'
 echo ''
