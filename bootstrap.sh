@@ -23,13 +23,12 @@ echo "ulimit -n 10480" >> ~/.bashrc
 
 rm -rf /etc/sysconfig/network-scripts/ifcfg-${my_int}
 tee /etc/sysconfig/network-scripts/ifcfg-${my_int}<<-'EOF'
-DEVICE=${my_int}
 TYPE=OVSPort
 DEVICETYPE=ovs
 OVS_BRIDGE=br-ex
 ONBOOT=yes
 EOF
-
+echo "DEVICE=${my_int}" >> /etc/sysconfig/network-scripts/ifcfg-${my_int}
 # setting up environoment
 tee /etc/environment<<-'EOF'
 LANG=en_US.utf-8
