@@ -81,7 +81,7 @@ systemctl restart nfs-server
 
 #packstack install (latest if specific release openstack-packstac-<release>)
 yum update -y
-yum install -y openstack-packstack openstack-tools
+yum install -y openstack-packstack openstack-utils
 
 
 
