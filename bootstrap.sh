@@ -17,9 +17,18 @@ sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/*
 #disable the fastest mirror plugin
 sed -i "s/enabled=1/enabled=0/g" /etc/yum/pluginconf.d/fastestmirror.conf
 echo "ulimit -n 10480" >> ~/.bashrc
-sed -i "s/BOOTPROTO=dhcp/BOOTPROTO=none/g" /etc/sysconfig/network-scripts/ifcfg-${my_int}
-sed -i "s/ONBOOT=no/ONBOOT=yes/g" /etc/sysconfig/network-scripts/ifcfg-${my_int}
-echo "NM_CONTROLLED=no" >> /etc/sysconfig/network-scripts/ifcfg-${my_int}
+#sed -i "s/BOOTPROTO=dhcp/BOOTPROTO=none/g" /etc/sysconfig/network-scripts/ifcfg-${my_int}
+#sed -i "s/ONBOOT=no/ONBOOT=yes/g" /etc/sysconfig/network-scripts/ifcfg-${my_int}
+#echo "NM_CONTROLLED=no" >> /etc/sysconfig/network-scripts/ifcfg-${my_int}
+
+rm -rf /etc/sysconfig/network-scripts/ifcfg-${my_int}
+tee /etc/sysconfig/network-scripts/ifcfg-${my_int}<<-'EOF'
+DEVICE=${my_int}
+TYPE=OVSPort
+DEVICETYPE=ovs
+OVS_BRIDGE=br-ex
+ONBOOT=yes
+EOF
 
 # setting up environoment
 tee /etc/environment<<-'EOF'
