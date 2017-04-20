@@ -17,9 +17,6 @@ sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/*
 #disable the fastest mirror plugin
 sed -i "s/enabled=1/enabled=0/g" /etc/yum/pluginconf.d/fastestmirror.conf
 echo "ulimit -n 10480" >> ~/.bashrc
-#sed -i "s/BOOTPROTO=dhcp/BOOTPROTO=none/g" /etc/sysconfig/network-scripts/ifcfg-${my_int}
-#sed -i "s/ONBOOT=no/ONBOOT=yes/g" /etc/sysconfig/network-scripts/ifcfg-${my_int}
-#echo "NM_CONTROLLED=no" >> /etc/sysconfig/network-scripts/ifcfg-${my_int}
 
 rm -rf /etc/sysconfig/network-scripts/ifcfg-${my_int}
 tee /etc/sysconfig/network-scripts/ifcfg-${my_int}<<-'EOF'
@@ -27,6 +24,7 @@ TYPE=OVSPort
 DEVICETYPE=ovs
 OVS_BRIDGE=br-ex
 ONBOOT=yes
+NM_CONTROLLED=no
 EOF
 echo "DEVICE=${my_int}" >> /etc/sysconfig/network-scripts/ifcfg-${my_int}
 # setting up environoment
@@ -50,7 +48,8 @@ git config --global color.ui auto
 #updating and installing needed packages including switch from chrony to NTP
 yum update -y
 yum install -y nfs-utils libnfsidmap epel-release ntp ntpdate open-vm-tools mc
-yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
+yum -y install centos-release-openstack-newton epel-release 
+#yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
 sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/*
 sed -i "s/mirrorlist=/#mirrorlist=/g" /etc/yum.repos.d/CentOS-fasttrack.repo
 sed -i "s/#baseurl=/baseurl=/g" /etc/yum.repos.d/CentOS-fasttrack.repo
