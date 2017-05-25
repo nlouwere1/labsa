@@ -57,6 +57,15 @@ cp $nic ${nic}.bak
 sed -i "s/NM_CONTROLLED=yes/NM_CONTROLLED=no/"  $nic
 done
 
+# Make sure no Interface is unused
+for nic in $(grep -l ONBOOT.*no /etc/sysconfig/network-scripts/ifcfg-e*)
+do
+cp $nic ${nic}.bak1
+sed -i "s/ONBOOT=no/ONBOOT=yes/"  $nic
+done
+
+
+
 # setting up environoment
 tee /etc/environment<<-'EOF'
 LANG=en_US.utf-8
