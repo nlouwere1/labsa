@@ -4,18 +4,24 @@
 # first section is to force a speciffic mirror in yum had issues that it takes a repo that was down
 # forcing reslove to my fastest mirror change ip if needed
 
-mymirror='mirror.wiru.co.za'
+#mymirror='mirror.wiru.co.za'
 my_ntp='10.0.1.254'
 my_net='10.0.0.0'
-my_int='enp1s0f1'
+my_int='ens33'
+my_ip='192.168.21.176'
+my_netmask='255.255.255.0'
+my_gw='192.168.21.2'
+my_name1='192.168.21.2'
+my_name2='192.168.21.2'
+
 
 echo "this is it ${mymirror}"
 echo "mirror.centos.org 154.66.153.4" >> /etc/hosts
-sed -i "s/mirrorlist=/#mirrorlist=/g" /etc/yum.repos.d/CentOS-Base.repo
-sed -i "s/#baseurl=/baseurl=/g" /etc/yum.repos.d/CentOS-Base.repo
-sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/*
+#sed -i "s/mirrorlist=/#mirrorlist=/g" /etc/yum.repos.d/CentOS-Base.repo
+#sed -i "s/#baseurl=/baseurl=/g" /etc/yum.repos.d/CentOS-Base.repo
+#sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/*
 #disable the fastest mirror plugin
-sed -i "s/enabled=1/enabled=0/g" /etc/yum/pluginconf.d/fastestmirror.conf
+#sed -i "s/enabled=1/enabled=0/g" /etc/yum/pluginconf.d/fastestmirror.conf
 echo "ulimit -n 10480" >> ~/.bashrc
 
 rm -rf /etc/sysconfig/network-scripts/ifcfg-${my_int}
@@ -27,6 +33,30 @@ ONBOOT=yes
 NM_CONTROLLED=no
 EOF
 echo "DEVICE=${my_int}" >> /etc/sysconfig/network-scripts/ifcfg-${my_int}
+
+# Configure External Network
+cat <<EOF >/etc/sysconfig/network-scripts/ifcfg-br-ex
+DEVICE=br-ex
+DEVICETYPE=ovs
+TYPE=OVSBridge
+BOOTPROTO=static
+IPADDR=${my_ip}
+NETMASK=${my_netmask}
+GATEWAY=${my_gw}
+DNS1=${my_name1}
+DNS2=${my_name2}
+ONBOOT=yes
+EOF
+
+
+
+# Make sure no Interface uses NetworkManager and disable it
+for nic in $(grep -l NM_CONTROLLED.*yes /etc/sysconfig/network-scripts/ifcfg-*) 
+do
+cp $nic ${nic}.bak
+sed -i "s/NM_CONTROLLED=yes/NM_CONTROLLED=no/"  $nic
+done
+
 # setting up environoment
 tee /etc/environment<<-'EOF'
 LANG=en_US.utf-8
@@ -50,9 +80,9 @@ yum update -y
 yum install -y nfs-utils libnfsidmap epel-release ntp ntpdate open-vm-tools mc
 yum -y install centos-release-openstack-newton epel-release 
 #yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
-sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/*
-sed -i "s/mirrorlist=/#mirrorlist=/g" /etc/yum.repos.d/CentOS-fasttrack.repo
-sed -i "s/#baseurl=/baseurl=/g" /etc/yum.repos.d/CentOS-fasttrack.repo
+#sed -i "s/mirror.centos.org/${mymirror}/g" /etc/yum.repos.d/*
+#sed -i "s/mirrorlist=/#mirrorlist=/g" /etc/yum.repos.d/CentOS-fasttrack.repo
+#sed -i "s/#baseurl=/baseurl=/g" /etc/yum.repos.d/CentOS-fasttrack.repo
 
 yum erase chrony -y
 sed -i "s/#restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap/#restrict ${my_net} mask 255.0.0.0 nomodify notrap/g" /etc/ntp.conf
